@@ -1,7 +1,9 @@
-package io.github.cursoms.msclientes.application;
+package io.github.cursodsousa.msclientes.application;
 
-import io.github.cursoms.msclientes.application.representation.ClienteSaveRequest;
-import io.github.cursoms.msclientes.domain.Cliente;
+import io.github.cursodsousa.msclientes.application.representation.ClienteSaveRequest;
+import io.github.cursodsousa.msclientes.domain.Cliente;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,26 +14,22 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("clientes")
-public class ClienteResource {
+@RequiredArgsConstructor
+@Slf4j
+public class ClientesResource {
 
-    private static final Logger log = LoggerFactory.getLogger(ClienteResource.class);
     private final ClienteService service;
-
-    public ClienteResource(ClienteService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public String status(){
         log.info("Obtendo o status do microservice de clientes");
-        return "OK";
+        return "ok";
     }
 
     @PostMapping
-    public ResponseEntity save(@RequestBody ClienteSaveRequest request) {
+    public ResponseEntity save(@RequestBody ClienteSaveRequest request){
         var cliente = request.toModel();
         service.save(cliente);
-        //http:localhost:PORT/clientes?cpf=12345678910 -> Modelo de URL que será criada.
         URI headerLocation = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .query("cpf={cpf}")
@@ -42,8 +40,8 @@ public class ClienteResource {
 
     @GetMapping(params = "cpf")
     public ResponseEntity dadosCliente(@RequestParam("cpf") String cpf){
-        var cliente = service.getByCpf(cpf);
-        if (cliente.isEmpty()){
+        var cliente = service.getByCPF(cpf);
+        if(cliente.isEmpty()){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(cliente);
