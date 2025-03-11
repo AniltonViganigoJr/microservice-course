@@ -1,7 +1,6 @@
 package io.github.cursoms.msclientes.application;
 
 import io.github.cursoms.msclientes.application.representation.ClienteSaveRequest;
-import io.github.cursoms.msclientes.domain.Cliente;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +30,7 @@ public class ClienteResource {
     public ResponseEntity save(@RequestBody ClienteSaveRequest request) {
         var cliente = request.toModel();
         service.save(cliente);
-        //http:localhost:PORT/clientes?cpf=12345678910 -> Modelo de URL que será criada.
+        //http:localhost:PORT/clientes?cpf={numero_do_cpf} -> Modelo de URL que será criada.
         URI headerLocation = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .query("cpf={cpf}")
