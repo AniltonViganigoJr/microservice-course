@@ -29,6 +29,12 @@ public class ClienteResource {
     @PostMapping
     public ResponseEntity save(@RequestBody ClienteSaveRequest request) {
         var cliente = request.toModel();
+        var buscaCliente = service.getByCpf(cliente.getCpf());
+
+        if (buscaCliente.stream().count() >= 1){
+            return ResponseEntity.badRequest().body("CPF já cadastrado na base de dados!");
+        }
+
         service.save(cliente);
         //http:localhost:PORT/clientes?cpf={numero_do_cpf} -> Modelo de URL que será criada.
         URI headerLocation = ServletUriComponentsBuilder
