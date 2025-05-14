@@ -1,4 +1,4 @@
-package io.github.cursoms.msavaliadorcredito;
+package io.github.cursoms.msavaliadorcredito.infra.clients;
 
 import io.github.cursoms.msavaliadorcredito.domain.model.DadosCliente;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,5 +11,4 @@ public interface ClienteResourceClient {
 
     @GetMapping(params = "cpf")
     ResponseEntity<DadosCliente> dadosCliente(@RequestParam("cpf") String cpf);
-
 }
