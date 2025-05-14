@@ -5,9 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-public class DadosCliente {
-    private Long id;
-    private String nome;
-    private Integer idade;
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class RetornoAvaliacaoCliente {
+    private List<CartaoAprovado> cartoesAprovados;
 }
