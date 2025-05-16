@@ -65,7 +65,14 @@ public class AvaliadorCreditoService {
                 cartaoAprovado.setBandeira(cartao.getBandeira());
                 cartaoAprovado.setLimiteAprovado(limiteAprovado);
 
-                return cartaoAprovado;
+                String nomeCartao = cartao.getNome().toUpperCase();
+                boolean ehCartaoBalck = nomeCartao.contains("BLACK");
+
+                if (!ehCartaoBalck || renda >= 20000) {
+                    return cartaoAprovado;
+                }
+                return null;
+
             }).collect(Collectors.toList());
 
             return new RetornoAvaliacaoCliente(listaCartoeAprovados);
