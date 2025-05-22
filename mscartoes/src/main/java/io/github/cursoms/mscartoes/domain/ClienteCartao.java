@@ -2,6 +2,7 @@ package io.github.cursoms.mscartoes.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ClienteCartao {
 
     @Id

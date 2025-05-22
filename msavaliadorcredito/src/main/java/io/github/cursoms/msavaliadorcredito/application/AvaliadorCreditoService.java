@@ -3,9 +3,11 @@ package io.github.cursoms.msavaliadorcredito.application;
 import feign.FeignException;
 import io.github.cursoms.msavaliadorcredito.application.exception.DadosClienteNotFoundException;
 import io.github.cursoms.msavaliadorcredito.application.exception.ErroComunicacaoMicroserviceException;
+import io.github.cursoms.msavaliadorcredito.application.exception.ErroSolicitacaoCartaoException;
 import io.github.cursoms.msavaliadorcredito.domain.model.*;
 import io.github.cursoms.msavaliadorcredito.infra.clients.CartaoResourceClient;
 import io.github.cursoms.msavaliadorcredito.infra.clients.ClienteResourceClient;
+import io.github.cursoms.msavaliadorcredito.infra.mqueue.SolicitacaoEmissaoCartaoPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
@@ -14,14 +16,16 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AvaliadorCreditoService {
 
-    public final ClienteResourceClient clienteResourceClient;
-    public final CartaoResourceClient cartaoResourceClient;
+    private final ClienteResourceClient clienteResourceClient;
+    private final CartaoResourceClient cartaoResourceClient;
+    private final SolicitacaoEmissaoCartaoPublisher emissaoCartaoPublisher;
 
     public SituacaoCliente obterSituacaoCliente(String cpf) throws DadosClienteNotFoundException,
             ErroComunicacaoMicroserviceException{
@@ -83,6 +87,16 @@ public class AvaliadorCreditoService {
                 throw  new DadosClienteNotFoundException();
             }
             throw new ErroComunicacaoMicroserviceException(e.getMessage(), statusCode);
+        }
+    }
+
+    public ProtocoloSolicitacaoCartao solicitarEmissaoCartao(DadosSolicitacaoEmissaoCartao dados){
+        try {
+            emissaoCartaoPublisher.solicitarCartao(dados);
+            var protocolo = UUID.randomUUID().toString();
+            return new ProtocoloSolicitacaoCartao(protocolo);
+        }catch (Exception e){
+            throw new ErroSolicitacaoCartaoException(e.getMessage());
         }
     }
 }
